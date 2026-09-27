@@ -1,2 +1,99 @@
-# Customer-Analytics-RFM-Segmentation-PowerBI-Dashboard
-📊 An end-to-end interactive Power BI Dashboard for Customer Demographics &amp; RFM (Recency, Frequency, Monetary) Segmentation Analysis using Power Query, Advanced DAX, and Custom UI/UX Design to drive targeted marketing campaigns.
+# 📊 Customer Analytics & RFM Customer Segmentation || Power BI Dashboard
+
+## 📌 Project Overview
+
+This project is an end-to-end, interactive **Customer Analytics & RFM Segmentation Dashboard** developed in **Microsoft Power BI**. By processing and modeling raw AdventureWorks e-commerce sales and customer data, this 4-page analytical report evaluates customer demographics, purchasing behavior, and lifetime value. Utilizing the **RFM (Recency, Frequency, Monetary)** framework, the dashboard classifies over **18,484 customers** into **11 actionable segments**, empowering marketing and business teams to execute data-driven retention and promotional campaigns.
+
+---
+
+## 🛠️ Technical Challenges & Solutions
+
+During the data modeling and dashboard development phase, several real-world technical challenges were addressed and resolved:
+
+1. **Raw Data Optimization & Age Bucketing:**
+   * **Problem:** The raw dataset contained numerous redundant columns across multiple tables and only provided raw customer `BirthDate` values, making demographic grouping impossible. Additionally, natural sorting of text-based age groups caused unordered chart axes.
+   * **Solution:** Streamlined the data model in **Power Query** by removing unnecessary columns and standardizing key data types (`CustomerKey`, `ProductKey`, `GeographyKey`). Authored custom **DAX** columns using `DATEDIFF` and `SWITCH(TRUE()...)` to categorize customers into 6 distinct `Age Bands`, and engineered a dedicated `Age Sort` helper table using `DATATABLE` to enforce logical chronological sorting.
+
+2. **Dynamic Customer-Level RFM Scoring & Percentile Ranking:**
+   * **Problem:** Calculating Recency, Frequency, and Monetary metrics dynamically per customer across thousands of repetitive order rows in `FactInternetSales` while assigning relative 1-to-5 scores.
+   * **Solution:** Developed advanced DAX measures utilizing `CALCULATE`, `FILTER`, `DISTINCTCOUNT`, and `ALLEXCEPT` to isolate customer-level transactions. Constructed a virtual summarized table (`SUMMARIZE`) and applied `PERCENTILE.INC` logic to rank customers into quintiles (1 to 5), concatenating them into a composite `RFM Score`.
+
+3. **Handling Duplicate Mapping Keys & Custom Visual Engineering:**
+   * **Problem:** Mapping composite RFM scores to the external `Segment Table` triggered cardinality conflicts due to overlapping score rules, and standard Power BI visuals lacked native Lollipop Charts for RFM comparison.
+   * **Solution:** Configured an active **Many-to-Many (`*:*`)** relationship with controlled filter direction to accurately map all 11 customer segments. Transformed native clustered bar charts into custom **Lollipop Charts** by leveraging analytical **Error Bars** (`Upper bound` measures with circular markers).
+
+---
+
+## ✨ Key Dashboard Features
+
+* **4-Page Web-Style Navigation:** Seamless horizontal menu bar (`Page Navigator`) allowing one-click transitions across all report views.
+* **Interactive Drill-Through Capability:** Right-clicking any demographic group (Gender, Age Group, Country) or RFM Segment drills directly into the `Customer List` page, filtering exact customer contact details (Email, City, Total Spend) for instant marketing outreach.
+* **Dynamic Cross-Filtering & Slicers:** Integrated product-level dropdown slicers and interactive visuals that dynamically update all KPIs and charts across the canvas.
+* **Custom Thematic UI/UX:** Designed with high-contrast custom color palettes (Orange, Royal Blue, and Purple accents) and minimal table grids for executive readability.
+
+---
+
+## 📈 Dashboard Pages & Visual Breakdown
+
+### 1. Demographics (Page 1)
+Provides a high-level executive summary of customer demographics and geographical revenue distribution:
+* **Executive KPI Cards:** Displays **Total Sales ($29.36M)** and **Total Customers (18.484K)**.
+* **Select Product (Dropdown Slicer):** Filters the entire demographic view by specific product names.
+* **Sales by Marital Status (Donut Chart):** Compares revenue contribution between Single (**51.73% / $15.19M**) and Married (**48.27% / $14.17M**) customers.
+* **Sales by Gender (Donut Chart):** Evaluates gender split across Female (**50.46% / $14.81M**) and Male (**49.54% / $14.55M**) buyers.
+* **Sales by Country (Bubble Map):** Geographically plots revenue concentration across North America, Europe, and Australia.
+* **Sales by Age Group (Horizontal Bar Chart):** Highlights revenue across age brackets, revealing the **55-64** and **65-74** age groups as top spenders.
+
+### 2. Segmentation (Page 2)
+The core analytical engine classifying customers into 11 RFM segments (*Champions, Loyal, Potential Loyalist, Promising, New Customers, About To Sleep, Hibernating Customers, Need Attention, At Risk, Cannot Lose Them, Lost Customers*):
+* **Customers by Segment (Bar Chart):** Displays customer headcount distribution across each segment.
+* **Sales by Segment (Bar Chart):** Compares total revenue generated by each customer tier.
+* **Frequency by Segment (Custom Lollipop Chart):** Visualizes order frequency patterns per segment.
+* **Monetary by Segment (Custom Lollipop Chart):** Tracks total dollar value contributed by each segment.
+* **Recency by Segment (Custom Lollipop Chart):** Measures the days elapsed since the last purchase across segments.
+
+### 3. Customer List (Page 3)
+Acts as both a comprehensive directory and an interactive **Drill-Through destination page**:
+* **Detailed Customer Table:** Lists individual `ID`, `F.Name`, `L.Name`, `Email`, `M.Status`, `Age`, `City`, `Country`, `Total Sales`, and assigned `Segment`.
+* **Product Filter Slicer:** Allows granular filtering of customer records by purchased products.
+
+### 4. Segment Guide (Page 4)
+Serves as a strategic reference guide for stakeholders and marketing teams:
+* **RFM Reference & Action Matrix:** Defines each of the 11 RFM segments in detail alongside tailored **Recommended Marketing Actions** (e.g., loyalty rewards for *Champions*, win-back campaigns for *At Risk* and *Lost Customers*).
+
+---
+
+## 🔄 Step-by-Step Development Workflow
+
+1. **Data Extraction & Cleaning (Power Query):** Imported raw Excel tables (`DimCustomer`, `DimGeography`, `DimProduct`, `DimDate`, `FactInternetSales`, and `RFM Segment` sheets), removed redundant fields, promoted headers, and formatted key columns.
+2. **Data Modeling (Star/Snowflake Schema):** Established relationships across 9 tables in the Model View, linking dimension tables, fact sales, custom sorting tables, and RFM summary tables.
+3. **DAX Feature Engineering:** Created calculated columns for `Age` and `Age Band`, a dedicated `All Measures` table for RFM metrics, and a DAX-generated `RFM Table` for quintile scoring (1–5).
+4. **Visual Design & Formatting:** Built the 4 report pages, engineered custom Lollipop charts using Error Bars, applied custom color themes, and configured the horizontal Page Navigator and Drill-Through filters.
+
+---
+
+## 🚀 Business Impact & Benefits
+
+* **Targeted Marketing Efficiency:** Eliminates guesswork by allowing marketers to drill through from high-level segments (like *Champions* or *Cannot Lose Them*) directly to customer email lists for personalized campaigns.
+* **Churn Prevention:** Identifies high-value customers showing recent inactivity (*At Risk* and *About To Sleep*), enabling proactive retention offers before they churn.
+* **Optimized Budget Allocation:** Helps management focus advertising spend on the most profitable demographics (e.g., 55–74 age brackets and top-performing regions).
+
+---
+
+## 📁 Repository Contents
+
+* `CUSTOMER ANALYTICS.pbix` : The fully functional Power BI dashboard containing the data model, DAX measures, and interactive visuals.
+* `Demographics.jpg`, `Segmentation.jpg`, `Customer_List.jpg`, `Segment_Guide.jpg` : High-resolution screenshots of all 4 dashboard pages.
+* `Customer_Analytics_Dashboard.pdf` : A static PDF export of the complete report for quick executive review.
+* `AdventureWorks_Dataset.xlsx` & `RFM_Segment.xlsx` : The primary sales/customer dataset and RFM segment mapping files utilized in this project.
+
+---
+
+## 👨‍💻 Author
+
+**Bayzid Mostak**<br>
+*Data Analyst & Visualization Expert*
+
+*   [LinkedIn] https://www.linkedin.com/in/bayzid-mostak-data-analyst/
+*   [GitHub] https://github.com/TusharAlBayzid
+*   Note: Download the `.pbix` file and open it in Power BI Desktop to experience the fully interactive cross-filtering capabilities of this dashboard.
